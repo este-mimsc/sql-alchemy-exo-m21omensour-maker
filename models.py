@@ -3,7 +3,8 @@
 The attributes are left intentionally light so students can practice
 adding the proper columns, relationships, and helper methods.
 """
-from app import db
+from extensions import db
+
 
 
 class User(db.Model):
@@ -12,6 +13,15 @@ class User(db.Model):
     __tablename__ = "users"
 
     # TODO: Add id primary key, username (unique + required), and
+      # Clé primaire
+    id = db.Column(db.Integer, primary_key=True)
+
+    username = db.Column(db.String(100), nullable=False, unique=True)
+
+    # Relation : un User possède plusieurs Post
+    posts = db.relationship("Post", backref="user", lazy=True)
+
+
     # a relationship to ``Post`` named ``posts``.
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)  # Students should customize constraints
@@ -30,7 +40,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.Column(db.Text)
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     def __repr__(self):  # pragma: no cover - convenience repr
         return f"<Post {getattr(self, 'title', None)}>"
